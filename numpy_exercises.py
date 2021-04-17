@@ -2,6 +2,7 @@ import numpy as np
 import math
 
 
+
 a = np.array([4, 10, 12, 23, -2, -1, 0, 0, 0, -6, 3, -7])
 print(a)
 
@@ -246,8 +247,7 @@ for row in b:
     for number in row:
         squares_of_b.append(number**2)
 
-
-
+np.square(b)
 
 
 
@@ -258,6 +258,8 @@ for row in b:
         if(number % 2 != 0):
             odds_in_b.append(number)
 
+b[b % 2 == 1]
+
 
 # Exercise 8 - refactor the following to use numpy to filter only the even numbers
 evens_in_b = []
@@ -266,13 +268,37 @@ for row in b:
         if(number % 2 == 0):
             evens_in_b.append(number)
 
+b[b % 2 == 0]
+
+            
+
 # Exercise 9 - print out the shape of the array b.
+np.shape(b)
+
 
 # Exercise 10 - transpose the array b.
+np.transpose(b)
+
+
 
 # Exercise 11 - reshape the array b to be a single list of 6 numbers. (1 x 6)
+np.reshape(b, (1, 6))
+## give us array([[3, 4, 5, 6, 7, 8]])
+
+
 
 # Exercise 12 - reshape the array b to be a list of 6 lists, each containing only 1 number (6 x 1)
+np.reshape(b, (6, 1))
+# gives us 
+# array([[3],
+#        [4],
+#        [5],
+#        [6],
+#        [7],
+#        [8]])
+
+
+
 
 ## Setup 3
 c = [
