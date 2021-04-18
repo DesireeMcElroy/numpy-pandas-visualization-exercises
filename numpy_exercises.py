@@ -307,23 +307,54 @@ c = [
     [7, 8, 9]
 ]
 
-# HINT, you'll first need to make sure that the "c" variable is a numpy array prior to using numpy array methods.
+# HINT, you'll first need to make sure that the "c" variable is a numpy array prior to 
+# using numpy array methods.
+type(c) # a list
+
+# make an array
+c = np.array ([
+    [1, 2, 3],
+    [4, 5, 6],
+    [7, 8, 9]])
+
 # Exercise 1 - Find the min, max, sum, and product of c.
+np.min(c) # 1
+np.max(c) # 9
+np.sum(c) # 45
 
 # Exercise 2 - Determine the standard deviation of c.
+np.std(c) # 2.582
 
 # Exercise 3 - Determine the variance of c.
+np.var(c) # 6.666
 
 # Exercise 4 - Print out the shape of the array c
+np.shape(c)
+# (3, 3)
 
 # Exercise 5 - Transpose c and print out transposed result.
+np.transpose(c)
+# array([[1, 4, 7],
+#        [2, 5, 8],
+#        [3, 6, 9]])
 
 # Exercise 6 - Get the dot product of the array c with c. 
+np.dot(c, c)
+# array([[ 30,  36,  42],
+#        [ 66,  81,  96],
+#        [102, 126, 150]])
 
-# Exercise 7 - Write the code necessary to sum up the result of c times c transposed. Answer should be 261
+# Exercise 7 - Write the code necessary to sum up the result of c times c transposed. 
+# Answer should be 261
+c_transposed = np.transpose(c)
+np.sum(c * c_transposed)
 
-# Exercise 8 - Write the code necessary to determine the product of c times c transposed. Answer should be 131681894400.
+ # or c.T to transpose
 
+# Exercise 8 - Write the code necessary to determine the product of c times c transposed. 
+# Answer should be 131681894400.
+c_transposed = np.transpose(c)
+np.prod(c * c_transposed)
 
 ## Setup 4
 d = [
@@ -332,22 +363,69 @@ d = [
     [60, 45, -45, 90, -45, 180]
 ]
 
+# turn to array
+d = np.array(d)
+
 # Exercise 1 - Find the sine of all the numbers in d
+np.sin(d)
+# array([[ 0.89399666, -0.98803162,  0.85090352,  0.        ,  0.58061118,
+#         -0.80115264],
+#        [ 0.85090352, -0.89399666,  0.98803162, -0.17604595,  0.89399666,
+#          0.        ],
+#        [-0.30481062,  0.85090352, -0.85090352,  0.89399666, -0.85090352,
+#         -0.80115264]])
 
 # Exercise 2 - Find the cosine of all the numbers in d
+np.cos(d)
+# array([[-0.44807362,  0.15425145,  0.52532199,  1.        ,  0.81418097,
+#         -0.59846007],
+#        [ 0.52532199, -0.44807362,  0.15425145,  0.98438195, -0.44807362,
+#          1.        ],
+#        [-0.95241298,  0.52532199,  0.52532199, -0.44807362,  0.52532199,
+#         -0.59846007]])
 
 # Exercise 3 - Find the tangent of all the numbers in d
+np.tan(d)
+# array([[-1.99520041, -6.4053312 ,  1.61977519,  0.        ,  0.71312301,
+#          1.33869021],
+#        [ 1.61977519,  1.99520041,  6.4053312 , -0.17883906, -1.99520041,
+#          0.        ],
+#        [ 0.32004039,  1.61977519, -1.61977519, -1.99520041, -1.61977519,
+#          1.33869021]])
 
 # Exercise 4 - Find all the negative numbers in d
+d[d<0]
+# array([-90, -30, -45, -45])
 
 # Exercise 5 - Find all the positive numbers in d
+d[d>0]
+# array([ 90,  30,  45, 120, 180,  45, 270,  90,  60,  45,  90, 180])
 
 # Exercise 6 - Return an array of only the unique numbers in d.
+np.unique(d)
+# array([-90, -45, -30,   0,  30,  45,  60,  90, 120, 180, 270])
 
 # Exercise 7 - Determine how many unique numbers there are in d.
+len(np.unique(d))
+# 11
 
 # Exercise 8 - Print out the shape of d.
+np.shape(d)
+# (3, 6)
+d.shape
+# (3, 6)
 
 # Exercise 9 - Transpose and then print out the shape of d.
+print(d.T.shape)
 
 # Exercise 10 - Reshape d into an array of 9 x 2
+np.reshape(d, (9, 2))
+# array([[ 90,  30],
+#        [ 45,   0],
+#        [120, 180],
+#        [ 45, -90],
+#        [-30, 270],
+#        [ 90,   0],
+#        [ 60,  45],
+#        [-45,  90],
+#        [-45, 180]])
