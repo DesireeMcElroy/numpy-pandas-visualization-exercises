@@ -169,11 +169,17 @@ percent_of_specials = total_true / total_specials
 # 0.0935
 
 
-# How many animals are hoppers that are above the median speed? What percentage is this?
+# How many animals are hoppers that are above the median speed? 
+# What percentage is this?
 mammals_speed_median = mammals_df.speed.median()
 # 48
 mammals_df.speed == 48 # only one has median speed of 48
 
-mammals_df[mammals_df.speed > 48 & (mammals_df.hoppers == True)]
+fast_hoppers = (mammals_df.speed > mammals_speed_median) & (mammals_df.hoppers==True)
+fast_hoppers = mammals_df[fast_hoppers]
+len(fast_hoppers)
 
-mammals_df.speed.count() # 107 total
+total = mammals_df.speed.count() # 107 total
+
+percentage_of_fast_hoppers = (len(fast_hoppers) / total) * 100
+# 6.54% of animals are hoppers with speed above the median.
