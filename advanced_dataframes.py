@@ -1,5 +1,7 @@
+#%%
 import pandas as pd
 import numpy as np
+from pydataset import data
 
 
 # Create a function named get_db_url. It should accept a username, 
@@ -61,9 +63,9 @@ employees_df.describe()
 
 
 #7. How many unique titles are in the titles DataFrame?
-titles_df.value_counts()
+# titles_df.value_counts()
 
-titles_df['titles'].value_counts
+# titles_df['titles'].value_counts
 
 
 
@@ -73,3 +75,187 @@ titles_df.to_date.sort_values().head(1)
 
 # 9. What is the most recent date in the to_date column?
 titles_df.to_date.sort_values(ascending=False)
+
+
+
+
+
+# Exercises II
+
+
+# 1. Copy the users and roles DataFrames from the examples above.
+users = pd.DataFrame({
+    'id': [1, 2, 3, 4, 5, 6],
+    'name': ['bob', 'joe', 'sally', 'adam', 'jane', 'mike'],
+    'role_id': [1, 2, 3, 3, np.nan, np.nan]
+})
+users
+
+
+roles = pd.DataFrame({
+    'id': [1, 2, 3, 4],
+    'name': ['admin', 'author', 'reviewer', 'commenter']
+})
+roles
+
+# 2. What is the result of using a right join on the DataFrames?
+# %%
+(users.merge(roles, 
+            left_on='role_id', 
+            right_on='id', 
+            how='right')
+            )
+# %%
+# The same amount of columns are displayed however, 
+# roles has only four rows thus the merged table only 
+# displays four rows.
+
+
+
+# 3. What is the result of using an outer join on the DataFrames?
+# %%
+(users.merge(roles, 
+            left_on='role_id', 
+            right_on='id', 
+            how='outer')
+            )
+# %%
+# outer includes everything so the table has a total of six rows.
+# It seems it only has as much as the largest table.
+
+
+
+
+# 4. What happens if you drop the foreign keys from the DataFrames and try to merge them?
+(users.merge(roles, 
+            left_on='role_id', 
+            right_on='id', 
+            how='outer')
+    .drop(columns='role_id')
+    .drop(columns='id')
+            )
+
+## KeyError: "['id'] not found in axis"
+
+
+
+
+# 5. Load the mpg dataset from PyDataset.
+mpg_df = data('mpg')
+
+
+
+
+# 6. Output and read the documentation for the mpg dataset.
+data('mpg', show_doc=True)
+
+
+
+# 7. How many rows and columns are in the dataset?
+mpg_df.shape
+# 234 rows and 11 columns
+
+
+# 8. Check out your column names and perform any cleanup you may want on them.
+mpg_df.rename(columns={'displ': 'display', 
+                     'cyl': 'cylinder',
+                     'trans': 'transmission',
+                     'drv': 'drive',
+                     'cty': 'city',
+                     'hwy': 'highway',
+                     'fl': 'fuel'}, inplace=True
+            )
+
+
+
+
+
+
+# 9. Display the summary statistics for the dataset.
+mpg_df.describe()
+
+
+
+# 10. How many different manufacturers are there?
+len(mpg_df.manufacturer.unique())
+# 15
+
+
+# 11. How many different models are there?
+len(mpg_df.model.unique())
+# 38
+
+
+
+
+# 12. Create a column named mileage_difference like you did in the DataFrames exercises; 
+# this column should contain the difference between highway and city mileage for each car.
+mpg_df['mileage_difference'] = (mpg_df.highway - mpg_df.city)
+
+
+
+
+# 13. Create a column named average_mileage like you did in the DataFrames exercises; 
+# this is the mean of the city and highway mileage.
+mpg_df['average_mileage'] = (mpg_df.highway + mpg_df.city)/2
+
+
+
+
+
+# 14. Create a new column on the mpg dataset named is_automatic that holds boolean 
+# values denoting whether the car has an automatic transmission.
+mpg_df['is_automatic'] = (mpg_df.transmission.str.contains('auto'))
+
+
+
+
+# 15. Using the mpg dataset, find out which which manufacturer has the best miles per 
+# gallon on average?
+mpg_df.groupby('manufacturer').average_mileage.agg('mean').sort_values(ascending=False).head(1)
+
+
+
+
+
+# 16. Do automatic or manual cars have better miles per gallon?
+mpg_df.groupby('is_automatic').average_mileage.agg('mean')
+
+
+
+# mpg['a or m'] = np.where(mpg['trans'].str.startswith('a') , 'auto', 'manual')
+# mpg.groupby('a or m').average_mileage.agg('mean')
+
+
+
+# Exercises III
+
+
+
+# 1. Use your get_db_url function to help you explore the data from the chipotle database.
+
+
+# 2. What is the total price for each order?
+
+
+# 3. What are the most popular 3 items?
+
+
+# 4. Which item has produced the most revenue?
+
+
+# 5. Using the titles DataFrame, visualize the number of employees with each title.
+
+
+# 6. Join the employees and titles DataFrames together.
+
+
+# 7. Visualize how frequently employees change titles.
+
+
+# 8. For each title, find the hire date of the employee that was hired most recently with that title.
+
+
+# 9. Write the code necessary to create a cross tabulation of the number of titles by department. 
+# (Hint: this will involve a combination of SQL code to pull the necessary data and python/pandas code to perform the manipulations.)
+# %%
