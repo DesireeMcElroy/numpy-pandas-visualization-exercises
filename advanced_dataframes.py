@@ -1,4 +1,3 @@
-#%%
 import pandas as pd
 import numpy as np
 from pydataset import data
@@ -9,13 +8,13 @@ from pydataset import data
 # string formatted like in the example at the start of this lesson.
 
 
-def get_db_url(host, user, password):
-    url = f'mysql+pymysql://{user}:{password}@{host}/employees'
+def get_db_url(host, user, password, database):
+    url = f'mysql+pymysql://{user}:{password}@{host}/{database}'
     return url
 
 
 from env import host, user, password
-url = get_db_url(host, user, password)
+url = get_db_url(host, user, password, 'employees')
 
 
 # 2. Use your function to obtain a connection to the employees database.
@@ -99,13 +98,11 @@ roles = pd.DataFrame({
 roles
 
 # 2. What is the result of using a right join on the DataFrames?
-# %%
 (users.merge(roles, 
             left_on='role_id', 
             right_on='id', 
             how='right')
             )
-# %%
 # The same amount of columns are displayed however, 
 # roles has only four rows thus the merged table only 
 # displays four rows.
@@ -113,13 +110,11 @@ roles
 
 
 # 3. What is the result of using an outer join on the DataFrames?
-# %%
 (users.merge(roles, 
             left_on='role_id', 
             right_on='id', 
             how='outer')
             )
-# %%
 # outer includes everything so the table has a total of six rows.
 # It seems it only has as much as the largest table.
 
@@ -134,7 +129,6 @@ roles
     .drop(columns='role_id')
     .drop(columns='id')
             )
-
 ## KeyError: "['id'] not found in axis"
 
 
@@ -153,7 +147,9 @@ data('mpg', show_doc=True)
 
 # 7. How many rows and columns are in the dataset?
 mpg_df.shape
-# 234 rows and 11 columns
+# 234 rows and 14 columns
+
+
 
 
 # 8. Check out your column names and perform any cleanup you may want on them.
@@ -180,6 +176,9 @@ mpg_df.describe()
 len(mpg_df.manufacturer.unique())
 # 15
 
+# or
+
+mpg_df.manufacturer.value_counts().count()
 
 # 11. How many different models are there?
 len(mpg_df.model.unique())
@@ -207,19 +206,22 @@ mpg_df['average_mileage'] = (mpg_df.highway + mpg_df.city)/2
 # values denoting whether the car has an automatic transmission.
 mpg_df['is_automatic'] = (mpg_df.transmission.str.contains('auto'))
 
-
+# or from Faith
+# mpg = mpg.assign(mileage_difference = mpg.highway - mpg.city,
+#                  average_mileage = (mpg.highway + mpg.city) / 2,
+#                  is_automatic = mpg.transmission.str.startswith('a'))
 
 
 # 15. Using the mpg dataset, find out which which manufacturer has the best miles per 
 # gallon on average?
 mpg_df.groupby('manufacturer').average_mileage.agg('mean').sort_values(ascending=False).head(1)
 
-
+# or use nlargest(1)
 
 
 
 # 16. Do automatic or manual cars have better miles per gallon?
-mpg_df.groupby('is_automatic').average_mileage.agg('mean')
+mpg_df.groupby(np.where(mpg_df['transmission'].str.contains('auto'), 'auto', 'manual')).average_mileage.agg('mean')
 
 
 
@@ -228,34 +230,43 @@ mpg_df.groupby('is_automatic').average_mileage.agg('mean')
 
 
 
+
+
 # Exercises III
 
 
 
 # 1. Use your get_db_url function to help you explore the data from the chipotle database.
-
+url = get_db_url(host, user, password, 'chipotle')
+orders_df = pd.read_sql('SELECT * FROM orders', url)
 
 # 2. What is the total price for each order?
-
+# Convert the item_price column into a float
+orders_df['item_price'] = orders_df.item_price.str.replace('$', '').astype('float')
+orders_df.groupby('order_id').sum('item_price')
 
 # 3. What are the most popular 3 items?
-
+orders_df.groupby('item_name').quantity.agg('sum').sort_values(ascending=False).head(3)
+# can also use quantity.sum()
 
 # 4. Which item has produced the most revenue?
-
+orders_df.groupby(['item_name', 'item_price']).quantity.agg('sum')
+# best_sellers = orders.groupby('item_name').quantity.sum().nlargest(4)
 
 # 5. Using the titles DataFrame, visualize the number of employees with each title.
+titles_df.title.value_counts()
+titles_df.title.value_counts().plot.bar()
 
 
 # 6. Join the employees and titles DataFrames together.
+employees_and_titles = employees_df.merge(titles_df, how='inner', on = 'emp_no')
 
 
 # 7. Visualize how frequently employees change titles.
 
 
 # 8. For each title, find the hire date of the employee that was hired most recently with that title.
-
+employees_and_titles.groupby('title').hire_date.max()
 
 # 9. Write the code necessary to create a cross tabulation of the number of titles by department. 
 # (Hint: this will involve a combination of SQL code to pull the necessary data and python/pandas code to perform the manipulations.)
-# %%
