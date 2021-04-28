@@ -29,6 +29,18 @@ print(a_pos.shape)
 a_pos_even = [i for i in a if (i % 2 == 0) and i > 0]
 print(a_pos_even)
 
+# or
+
+a[(a > 0) & (a % 2 == 0)].shape[0]
+
+# another way to do it
+positive_mask = a > 0
+even_mask = a % 2 == 0
+a[positive_mask & even_mask].shape[0]
+# Or...
+positives = a[a > 0]
+positive_evens = positives[positives % 2 == 0]
+
 
 # 4. If you were to add 3 to each data point, how many positive numbers would there be?
 
