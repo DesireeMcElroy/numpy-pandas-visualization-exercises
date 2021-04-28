@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 from pydataset import data
+import matplotlib.pyplot as plt
 
 
 # Create a function named get_db_url. It should accept a username, 
@@ -263,6 +264,23 @@ employees_and_titles = employees_df.merge(titles_df, how='inner', on = 'emp_no')
 
 
 # 7. Visualize how frequently employees change titles.
+titles_df.groupby('emp_no').title.count().sample(10)
+titles_df.groupby('emp_no').title.count().value_counts()
+changes = titles_df.emp_no.value_counts()
+changes.value_counts().plot(kind='barh', 
+                            color='blueviolet', 
+                            ec='black', 
+                            width=.8)
+
+plt.title('How Common is it for Employees to Change Titles?')
+plt.xlabel('Number of Employees')
+plt.ylabel('Number of Title Changes')
+plt.yticks(ticks=[0,1,2], labels=['0 Changes', '1 Change', '2 Changes'])
+
+# reorder y-axis of horizontal bar chart
+plt.gca().invert_yaxis()
+
+plt.show()
 
 
 # 8. For each title, find the hire date of the employee that was hired most recently with that title.
@@ -270,3 +288,23 @@ employees_and_titles.groupby('title').hire_date.max()
 
 # 9. Write the code necessary to create a cross tabulation of the number of titles by department. 
 # (Hint: this will involve a combination of SQL code to pull the necessary data and python/pandas code to perform the manipulations.)
+dept_title_query = '''
+
+                    SELECT t.emp_no, 
+                    t.title, 
+                    t.from_date, 
+                    t.to_date, 
+                    d.dept_name 
+                    FROM departments AS d 
+                    JOIN dept_emp AS de USING(dept_no) 
+                    JOIN titles AS t USING(emp_no);
+
+                    '''
+
+
+dept_titles = pd.read_sql(dept_title_query, get_db_url(host, user, password, 'employees'))
+dept_titles.shape
+all_titles_crosstab = pd.crosstab(dept_titles.dept_name, dept_titles.title)
+
+
+
